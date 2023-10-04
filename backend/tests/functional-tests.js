@@ -130,91 +130,91 @@ suite("Functional Tests", function () {
   });
 
   //#7
-  // test("Update one field on an issue", (done) => {
-  //   chai
-  //     .request(server)
-  //     .put("/api/issues/test-project")
-  //     .send({
-  //       _id: "65172fd5496959ddb986d34c",
-  //       issue_title: "new issue text",
-  //     })
-  //     .end((err, res) => {
-  //       assert.equal(res.body.result, "successfully updated");
-  //       done();
-  //     });
-  // });
-  // //#8
-  // test("Update multiple fields on an issue", (done) => {
-  //   chai
-  //     .request(server)
-  //     .put("/api/issues/test-project")
-  //     .send({
-  //       _id: "65172ff2496959ddb986d34f",
-  //       issue_title: "new issue text",
-  //       issue_text: "updated issue",
-  //     })
-  //     .end((err, res) => {
-  //       assert.equal(res.body.result, "successfully updated");
-  //       done();
-  //     });
-  // });
-  // //#9
-  // test("Update an issue with missing _id", (done) => {
-  //   chai
-  //     .request(server)
-  //     .put("/api/issues/test-project")
-  //     .send({
-  //       issue_title: "new issue text",
-  //       issue_text: "updated issue",
-  //     })
-  //     .end((err, res) => {
-  //       console.log(res, "res");
-  //       assert.equal(res.body.error, "missing _id");
-  //       done();
-  //     });
-  // });
-  // //#10
-  // test("Update an issue with no fields", (done) => {
-  //   chai
-  //     .request(server)
-  //     .put("/api/issues/test-project")
-  //     .send({
-  //       _id: "65172ff2496959ddb986d34f",
-  //     })
-  //     .end((err, res) => {
-  //       console.log(res, "res");
-  //       assert.equal(res.body.error, "no update field(s) sent");
-  //       done();
-  //     });
-  // });
-  // //#11
-  // test("Update an issue with and invalid _id", (done) => {
-  //   chai
-  //     .request(server)
-  //     .put("/api/issues/test-project")
-  //     .send({
-  //       _id: "jfj4853k494",
-  //       issue_title: "new issue text",
-  //     })
-  //     .end((err, res) => {
-  //       console.log(res, "res");
-  //       assert.equal(res.body.error, "could not update");
-  //       done();
-  //     });
-  // });
-  // //12
-  // test("Update an issue with and invalid _id", (done) => {
-  //   chai
-  //     .request(server)
-  //     .put("/api/issues/test-project")
-  //     .send({
-  //       _id: "jfj4853k494",
-  //       issue_title: "new issue text",
-  //     })
-  //     .end((err, res) => {
-  //       console.log(res, "res");
-  //       assert.equal(res.body.error, "could not update");
-  //       done();
-  //     });
-  // });
+  test("Update one field on an issue", (done) => {
+    chai
+      .request(server)
+      .put("/api/issues/test-project")
+      .send({
+        _id: "65172fd5496959ddb986d34c",
+        issue_title: "new issue text",
+      })
+      .end((err, res) => {
+        assert.equal(res.body.result, "successfully updated");
+        done();
+      });
+  });
+  //#8
+  test("Update multiple fields on an issue", (done) => {
+    chai
+      .request(server)
+      .put("/api/issues/test-project")
+      .send({
+        _id: "65172ff2496959ddb986d34f",
+        issue_title: "new issue text",
+        issue_text: "updated issue",
+      })
+      .end((err, res) => {
+        assert.equal(res.body.result, "successfully updated");
+        done();
+      });
+  });
+  //#9
+  test("Update an issue with missing _id", (done) => {
+    chai
+      .request(server)
+      .put("/api/issues/test-project")
+      .send({
+        issue_title: "new issue text",
+        issue_text: "updated issue",
+      })
+      .end((err, res) => {
+        console.log(res, "res");
+        assert.equal(res.body.error, "missing _id");
+        done();
+      });
+  });
+  //#10
+  test("Update an issue with no fields", (done) => {
+    chai
+      .request(server)
+      .put("/api/issues/test-project")
+      .send({
+        _id: "65172ff2496959ddb986d34f",
+      })
+      .end((err, res) => {
+        console.log(res, "res");
+        assert.equal(res.body.error, "no update field(s) sent");
+        done();
+      });
+  });
+  //#11
+  test("Update an issue with and invalid _id", (done) => {
+    chai
+      .request(server)
+      .put("/api/issues/test-project")
+      .send({
+        _id: "jfj4853k494",
+        issue_title: "new issue text",
+      })
+      .end((err, res) => {
+        console.log(res, "res");
+        assert.equal(res.body.error, "could not update");
+        done();
+      });
+  });
+  //12
+  test("Update an issue with and invalid _id", (done) => {
+    chai
+      .request(server)
+      .put("/api/issues/test-project")
+      .send({
+        _id: "jfj4853k494",
+        issue_title: "new issue text",
+      })
+      .end((err, res) => {
+        console.log(res, "res");
+        assert.equal(res.body.error, "could not update");
+        done();
+      });
+  });
 });
