@@ -1,16 +1,18 @@
 "use strict";
+
 const Issue = require("../models");
-const mongoose = require("mongoose");
-const express = require("express");
+//const mongoose = require("mongoose");
 const ObjectId = require("mongoose").Types.ObjectId;
 const db = require("../dbconnect.js");
+const app = require("../server")
+
 
 module.exports = function (app) {
   app
     .route("/api/issues/:project")
-
     //get request
     .get(async function (req, res) {
+      console.log("yes")
       let projectName = req.params.project;
       const {
         issue_title,
@@ -40,7 +42,6 @@ module.exports = function (app) {
 
     //post request
     .post(function (req, res) {
-      console.log(res.body, "res");
       const { issue_title, issue_text, created_by, assigned_to, status_text } =
         req.body;
       console.log(req.body);
@@ -53,6 +54,7 @@ module.exports = function (app) {
         res.json({ error: "required field(s) missing" });
         return;
       }
+
       //create instance of issue
       const newIssue = new Issue({
         issue_title: issue_title,
@@ -99,6 +101,7 @@ module.exports = function (app) {
         return;
       }
 
+      //Need to change entirely, needs to check for existence of update fields, not if they are empty!!!
       const keyArray = Object.keys(req.body);
       if (keyArray.length == 1) {
         res.json({ error: "no update field(s) sent", _id: req.body._id });
@@ -138,10 +141,11 @@ module.exports = function (app) {
       }
     })
 
-    //delete request
+    //put request
     .delete(async function (req, res) {
       let project = req.params.project;
       const id = req.body._id;
+      console.log(req.body._id);
 
       //check for missing id
       if (!id) {
@@ -162,7 +166,8 @@ module.exports = function (app) {
         } catch (error) {
           console.log(error);
         }
+      } else {
+        res.json({ error: "could not delete", _id: id });
       }
     });
 };
-
