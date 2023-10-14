@@ -1,18 +1,18 @@
 "use strict";
 
-const Issue = require("../models");
+const Issue = require("../Models/models");
 //const mongoose = require("mongoose");
 const ObjectId = require("mongoose").Types.ObjectId;
-const db = require("../dbconnect.js");
-const app = require("../server")
+const db = require("../Config/dbconnect.js");
+const app = require("../server");
 
-
+console.log(Issue);
 module.exports = function (app) {
   app
     .route("/api/issues/:project")
     //get request
     .get(async function (req, res) {
-      console.log("yes")
+      console.log("yes");
       let projectName = req.params.project;
       const {
         issue_title,
@@ -92,18 +92,14 @@ module.exports = function (app) {
     .put(async function (req, res) {
       let project = req.params.project;
       const id = req.body._id;
-      console.log(Object.keys(req.body));
-      console.log(req.body._id, "req.body.id");
-
+    
       //check for missing id
       if (!id) {
         res.json({ error: "missing _id" });
         return;
       }
-
-      //Need to change entirely, needs to check for existence of update fields, not if they are empty!!!
-      const keyArray = Object.keys(req.body);
-      if (keyArray.length == 1) {
+      
+      if (req.body.issue_title == "" && req.body.issue_text == "" && req.body.created_by == "" && req.body.assigned_to == "" && req.body.status_text == "") {
         res.json({ error: "no update field(s) sent", _id: req.body._id });
         return;
       }
@@ -112,7 +108,6 @@ module.exports = function (app) {
         try {
           const foundIssue = await Issue.findById(id);
           if (foundIssue) {
-            console.log(foundIssue, "issue3"); //just added
             let issueId = foundIssue._id.toString(); //just added
             //update values
             for (const key in req.body) {
@@ -129,14 +124,12 @@ module.exports = function (app) {
               });
             }
           } else {
-            console.log("here");
             res.json({ error: "could not update", _id: id });
           }
         } catch (err) {
           console.log(err);
         }
       } else {
-        console.log("here2");
         res.json({ error: "could not update", _id: id });
       }
     })
@@ -145,7 +138,6 @@ module.exports = function (app) {
     .delete(async function (req, res) {
       let project = req.params.project;
       const id = req.body._id;
-      console.log(req.body._id);
 
       //check for missing id
       if (!id) {
