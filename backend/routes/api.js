@@ -12,7 +12,6 @@ module.exports = function (app) {
     .route("/api/issues/:project")
     //get request
     .get(async function (req, res) {
-      console.log("yes");
       let projectName = req.params.project;
       const {
         issue_title,
@@ -44,16 +43,17 @@ module.exports = function (app) {
     .post(function (req, res) {
       const { issue_title, issue_text, created_by, assigned_to, status_text } =
         req.body;
-      console.log(req.body);
+      console.log(req.body, "body");
       //check for requirements
       if (
-        issue_text == undefined ||
-        issue_title == undefined ||
-        created_by == undefined
+        issue_text == "" ||
+        issue_title == "" ||
+        created_by == ""
       ) {
+        console.log(res)
         res.json({ error: "required field(s) missing" });
         return;
-      }
+      } 
 
       //create instance of issue
       const newIssue = new Issue({
@@ -92,14 +92,20 @@ module.exports = function (app) {
     .put(async function (req, res) {
       let project = req.params.project;
       const id = req.body._id;
-    
+
       //check for missing id
       if (!id) {
         res.json({ error: "missing _id" });
         return;
       }
-      
-      if (req.body.issue_title == "" && req.body.issue_text == "" && req.body.created_by == "" && req.body.assigned_to == "" && req.body.status_text == "") {
+
+      if (
+        req.body.issue_title == "" &&
+        req.body.issue_text == "" &&
+        req.body.created_by == "" &&
+        req.body.assigned_to == "" &&
+        req.body.status_text == ""
+      ) {
         res.json({ error: "no update field(s) sent", _id: req.body._id });
         return;
       }
