@@ -3,33 +3,17 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-const apiRoutes = require("./Routes/api.js");
+const apiRoutes = require("./routes/api.js"); //might need to capitalize Routes
 const app = express();
-//const fccTestingRoutes = require("./routes/fcctesting.js");
-//const runner = require("./test-runner");
-//require("dotenv").config();
+require("dotenv").config();
 //const bodyParser = require("body-parser");
 //const expect = require("chai").expect;
 
-app.use(express.static(path.join(__dirname, "../frontend/public")));
+//app.use(express.static(path.join(__dirname, "../frontend/public")));
 app.use(cors({ origin: "*" })); //For FCC testing purposes only
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 //app.use(bodyParser.urlencoded({ extended: true }));
-
-//front-end
-app.route("/:project/").get(function (req, res) {
-  res.sendFile("issue.html", {
-    root: path.join(__dirname, "../frontend/views"),
-  });
-});
-
-//Index page
-app.route("/").get(function (req, res) {
-  res.sendFile("index.html", {
-    root: path.join(__dirname, "../frontend/views"),
-  });
-});
 
 //Routing for API
 apiRoutes(app);
