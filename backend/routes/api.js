@@ -9,7 +9,7 @@ const app = require("../server");
 console.log(Issue);
 module.exports = function (app) {
   app
-    .route("/api/issues/:project")
+    .route("/")
     //get request
     .get(async function (req, res) {
       let projectName = req.params.project;
