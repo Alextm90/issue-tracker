@@ -3,28 +3,13 @@ import axios from "axios";
 import { terminal } from "virtual:terminal";
 
 
-const IssueList = () => {
-
-    const [issueList, setIssueList] = useState([])
-
-      useEffect(() => {
-        const getIssues = async () => {
-          try {
-            const response = await axios.get("http://localhost:3000/api/issues/:project");
-            setIssueList(response.data);
-            terminal.log(issueList)
-          } catch (err) {
-            console.log(err);
-          }
-        };
-        getIssues();
-      }, []);
-
-       terminal.log(issueList);
-
+const IssueList = ({ list }) => {
+  //const mike = list[0]._id
   return (
-    <div>
-      <div>{issueList}</div>
+    <div className="card">
+      {list.map((item) => (
+        <div key={item._id} >{item.created_by}</div>
+      ))}
     </div>
   );
 }
