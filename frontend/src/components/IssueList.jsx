@@ -2,16 +2,22 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { terminal } from "virtual:terminal";
 
-
 const IssueList = ({ list }) => {
-  //const mike = list[0]._id
   return (
-    <div className="card">
+    <>
       {list.map((item) => (
-        <div key={item._id} >{item.created_by}</div>
+        <div key={item._id} className="issue">
+          <p>id: {item._id}</p>
+          <h3>{item.issue_title} - {item.open ? "(Open)" : "(Closed)"}</h3>
+          <p>{item.issue_text}</p>
+          <p>Created by: {item.created_by}</p>
+          <p>Assigned to: {item.assigned_to}</p>
+          <p>Created on: {item.created_on}</p>
+          <p>Updated on: {item.updated_on}</p>
+        </div>
       ))}
-    </div>
+    </>
   );
-}
+};
 
-export default IssueList
+export default IssueList;
