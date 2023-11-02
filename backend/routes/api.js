@@ -6,7 +6,6 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const db = require("../Config/dbconnect.js");
 const app = require("../server");
 
-console.log(Issue);
 module.exports = function (app) {
   app
     .route("/")
@@ -141,9 +140,10 @@ module.exports = function (app) {
     })
 
     //put request
-    .delete(async function (req, res) {
+    app.route("/:id").delete(async function (req, res) {
       let project = req.params.project;
-      const id = req.body._id;
+
+      const { id } = req.params;
 
       //check for missing id
       if (!id) {
