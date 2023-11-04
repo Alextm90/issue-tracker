@@ -1,31 +1,38 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { terminal } from "virtual:terminal";
-import { useParams } from "react-router-dom";
+
 
 const IssueList = ({ list }) => {
-  const { id } = useParams();
+
 
   const handleDeleteIssue = async (e) => {
-     e.preventDefault();
+    e.preventDefault();
     try {
       await axios
         .delete(`http://localhost:3000/${e.target.value}`)
-        .then((res) => {
-          terminal.log(e, "id");
-        });
+    } catch (error) {
+      terminal.error(error);
+    }
+  };
+
+
+  const handleCloseIssue = async (e) => {
+    try {
+      await axios
+        .put("http://localhost:3000", { _id: e.target.value, open: false })
     } catch (error) {
       terminal.error(error);
     }
   };
 
   return (
-    <>
-      {list.map((item) => (
-        <div key={item._id} className="issue">
+    <div>
+      {list.map((item, key) => (
+        <div key={item._id} className={item.open ? "open-issue" : "closed-issue"}>
           <p>id: {item._id}</p>
           <h3>
-            {item.issue_title} - {item.open ? "(Open)" : "(Closed)"}
+            {item.issue_title} - {item.open == true ? "(Open)" : "(Closed)"}
           </h3>
           <p>{item.issue_text}</p>
           <p>Created by: {item.created_by}</p>
@@ -34,12 +41,16 @@ const IssueList = ({ list }) => {
           <p>Updated on: {item.updated_on}</p>
           <div className="button-container">
             <button>Edit</button>
-            <button>Close</button>
-            <button value={item._id} onClick={(e) => handleDeleteIssue(e)}>Delete</button>
+            <button value={item._id} onClick={(e) => handleCloseIssue(e)}>
+              Close
+            </button>
+            <button value={item._id} onClick={(e) => handleDeleteIssue(e)}>
+              Delete
+            </button>
           </div>
         </div>
       ))}
-    </>
+    </div>
   );
 };
 
