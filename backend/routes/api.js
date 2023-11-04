@@ -44,15 +44,11 @@ module.exports = function (app) {
         req.body;
       console.log(req.body, "body");
       //check for requirements
-      if (
-        issue_text == "" ||
-        issue_title == "" ||
-        created_by == ""
-      ) {
-        console.log(res)
+      if (issue_text == "" || issue_title == "" || created_by == "") {
+        console.log(res);
         res.json({ error: "required field(s) missing" });
         return;
-      } 
+      }
 
       //create instance of issue
       const newIssue = new Issue({
@@ -87,11 +83,12 @@ module.exports = function (app) {
         });
     })
 
-    //put request
+    //put request for updating issues
     .put(async function (req, res) {
       let project = req.params.project;
       const id = req.body._id;
 
+      console.log(req.body, "body");
       //check for missing id
       if (!id) {
         res.json({ error: "missing _id" });
@@ -99,6 +96,7 @@ module.exports = function (app) {
       }
 
       if (
+        req.body.open == "true" &&
         req.body.issue_title == "" &&
         req.body.issue_text == "" &&
         req.body.created_by == "" &&
@@ -137,35 +135,36 @@ module.exports = function (app) {
       } else {
         res.json({ error: "could not update", _id: id });
       }
-    })
-
-    //put request
-    app.route("/:id").delete(async function (req, res) {
-      let project = req.params.project;
-
-      const { id } = req.params;
-
-      //check for missing id
-      if (!id) {
-        res.json({ error: "missing _id" });
-        return;
-      }
-      //check for valid id
-      if (ObjectId.isValid(id)) {
-        try {
-          const foundIssue = await Issue.findById(id);
-          if (foundIssue) {
-            const deletedIssue = await Issue.deleteOne({ _id: id });
-            console.log(deletedIssue);
-            res.json({ result: "successfully deleted", _id: id });
-          } else {
-            res.json({ error: "could not delete", _id: id });
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      } else {
-        res.json({ error: "could not delete", _id: id });
-      }
     });
+
+  
+  //delete request
+  app.route("/:id").delete(async function (req, res) {
+    let project = req.params.project;
+
+    const { id } = req.params;
+
+    //check for missing id
+    if (!id) {
+      res.json({ error: "missing _id" });
+      return;
+    }
+    //check for valid id
+    if (ObjectId.isValid(id)) {
+      try {
+        const foundIssue = await Issue.findById(id);
+        if (foundIssue) {
+          const deletedIssue = await Issue.deleteOne({ _id: id });
+          console.log(deletedIssue);
+          res.json({ result: "successfully deleted", _id: id });
+        } else {
+          res.json({ error: "could not delete", _id: id });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      res.json({ error: "could not delete", _id: id });
+    }
+  });
 };
