@@ -25,16 +25,16 @@ const Home = () => {
       }
     };
     getIssues();
-  }, [issue]);
+  }, [issue, list]);
 
-terminal.log(list)
+
   const handleInputChange = (event) => {
+    terminal.log(issue);
     const { name, value } = event.target;
     setIssue({ ...issue, [name]: value });
   };
 
   const handleSubmit = async (event) => {
-    terminal.log(list, "list")
     event.preventDefault();
     if (
       issue.issue_title == "" ||
@@ -45,7 +45,7 @@ terminal.log(list)
     } else {
       try {
         await axios.post("http://localhost:3000", issue).then((res) => {
-          //terminal.log(res.data);
+          terminal.log(res.data);
         });
       } catch (error) {
         terminal.error(error);
@@ -55,7 +55,7 @@ terminal.log(list)
         issue_text: "",
         created_by: "",
         assigned_to: "",
-        status_text: "",
+        status_text: ""
       });
     }
   };
@@ -118,7 +118,7 @@ terminal.log(list)
         </form>
       </div>
       <div>
-        <IssueList list={list}/>
+        <IssueList list={list} setList={setList} issue={issue} setIssue={setIssue}/>
       </div>
     </div>
   );
