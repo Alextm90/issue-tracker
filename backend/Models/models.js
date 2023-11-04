@@ -6,7 +6,7 @@ const userSchema = new Schema({
   issue_text: { type: String }, //might need to change back to required
   created_on: { type: Date, required: true },
   updated_on: { type: Date, required: true },
-  open: Boolean,
+  open: { type: Boolean, required: true },
   created_by: { type: String }, //might need to change back to required
   assigned_to: String,
   status_text: String,
