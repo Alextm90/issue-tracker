@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { terminal } from "virtual:terminal";
 import IssueList from "../components/IssueList";
+import Form from "../components/form";
+import handleInputChange from "../functions/handleInputChange";
 
 const Home = () => {
   const [issue, setIssue] = useState({
@@ -25,14 +27,7 @@ const Home = () => {
       }
     };
     getIssues();
-  }, [issue, list]);
-
-
-  const handleInputChange = (event) => {
-    terminal.log(issue);
-    const { name, value } = event.target;
-    setIssue({ ...issue, [name]: value });
-  };
+  }, [list]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -55,7 +50,7 @@ const Home = () => {
         issue_text: "",
         created_by: "",
         assigned_to: "",
-        status_text: ""
+        status_text: "",
       });
     }
   };
@@ -65,60 +60,14 @@ const Home = () => {
       <div id="submitNewIssue">
         <br />
         <h3>Submit a new issue:</h3>
-        <form id="newIssue" method="post" action="/api/">
-          <input
-            type="text"
-            name="issue_title"
-            placeholder="*Title"
-            value={issue.issue_title}
-            style={{ width: "320px", marginBottom: "3px" }}
-            required={true}
-            onChange={handleInputChange}
-          />
-          <br />
-          <textarea
-            type="text"
-            name="issue_text"
-            value={issue.issue_text}
-            placeholder="*Text"
-            style={{ width: "320px", height: "100px", marginBottom: "-5px" }}
-            required={true}
-            onChange={handleInputChange}
-          ></textarea>
-          <br></br>
-          <input
-            type="text"
-            name="created_by"
-            placeholder="*Created by"
-            value={issue.created_by}
-            style={{ width: "100px", marginRight: "2px" }}
-            required={true}
-            onChange={handleInputChange}
-          ></input>
-          <input
-            type="text"
-            name="assigned_to"
-            value={issue.assigned_to}
-            placeholder="(opt)Assigned to"
-            style={{ width: "100px", marginRight: "2px" }}
-            onChange={handleInputChange}
-          ></input>
-          <input
-            type="text"
-            name="status_text"
-            value={issue.status_text}
-            placeholder="(opt)Status text"
-            style={{ width: "100px" }}
-            onChange={handleInputChange}
-          ></input>
-          <br />
-          <button type="submit" onClick={handleSubmit}>
-            Submit Issue
-          </button>
-        </form>
+        <Form
+          issue={issue}
+          handleInputChange={(e) => handleInputChange(e, setIssue, issue)}
+          handleSubmit={handleSubmit}
+        />
       </div>
       <div>
-        <IssueList list={list} setList={setList} issue={issue} setIssue={setIssue}/>
+        <IssueList list={list} setList={setList} />
       </div>
     </div>
   );
