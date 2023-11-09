@@ -29,10 +29,6 @@ const IssueList = ({ list }) => {
     }
   };
 
-  useEffect(() => {
-    terminal.log(issueId);
-  }, [issueId]);
-
   return (
     <div>
       {list.map((item, key) => (
