@@ -3,20 +3,17 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-const apiRoutes = require("./routes/api.js"); //might need to capitalize Routes
+const apiRoutes = require("./Routes/api.js"); //might need to capitalize Routes
 const app = express();
 require("dotenv").config();
 //const bodyParser = require("body-parser");
 //const expect = require("chai").expect;
 
-//app.use(express.static(path.join(__dirname, "../frontend/public")));
 app.use(cors({ origin: "*" })); //For FCC testing purposes only
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-//app.use(bodyParser.urlencoded({ extended: true }));
 
-//Routing for API
-apiRoutes(app);
+app.use("/", apiRoutes);
 
 //404 Not Found Middleware
 app.use(function (req, res, next) {
