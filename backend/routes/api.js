@@ -1,13 +1,14 @@
 "use strict";
-
 const Issue = require("../Models/models");
 //const mongoose = require("mongoose");
 const ObjectId = require("mongoose").Types.ObjectId;
 const db = require("../Config/dbconnect.js");
 const app = require("../server");
+const express = require("express");
+const router = express.Router();
 
-module.exports = function (app) {
-  app
+
+  router
     .route("/")
     //get request
     .get(async function (req, res) {
@@ -88,7 +89,7 @@ module.exports = function (app) {
       let project = req.params.project;
       const id = req.body._id;
 
-      console.log(req.body, "body");
+      console.log(req.body, "bodyy");
       //check for missing id
       if (!id) {
         res.json({ error: "missing _id" });
@@ -139,9 +140,7 @@ module.exports = function (app) {
 
   
   //delete request
-  app.route("/:id").delete(async function (req, res) {
-    let project = req.params.project;
-
+  router.route("/:id").delete(async function (req, res) {
     const { id } = req.params;
 
     //check for missing id
@@ -167,4 +166,5 @@ module.exports = function (app) {
       res.json({ error: "could not delete", _id: id });
     }
   });
-};
+
+module.exports = router;
