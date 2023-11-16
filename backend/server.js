@@ -1,19 +1,28 @@
 "use strict";
-
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-const apiRoutes = require("./Routes/api.js"); //might need to capitalize Routes
+const issue = require("./Routes/issues.js");
+const user = require("./Routes/users.js");
 const app = express();
 require("dotenv").config();
-//const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 //const expect = require("chai").expect;
 
-app.use(cors({ origin: "*" })); //For FCC testing purposes only
+app.use(
+  cors({
+    origin: ["http://localhost:3001"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/", apiRoutes);
+
+app.use("/", issue);
+app.use("/", user)
 
 //404 Not Found Middleware
 app.use(function (req, res, next) {
