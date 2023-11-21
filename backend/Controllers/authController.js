@@ -2,8 +2,14 @@ const jwt = require("jsonwebtoken");
 const User = require("../Models/user.js");
 const bcrypt = require("bcrypt");
 const ObjectId = require("mongoose").Types.ObjectId;
-const { createAccessToken, createRefreshToken } = require("../Util/tokens.js");
-const RefreshToken = require("../Models/RefreshToken.js");
+const {
+  createAccessToken,
+  createRefreshToken,
+  sendAccessToken,
+  sendRefreshToken,
+} = require("../Util/tokens.js");
+const RefreshTokenModel = require("../Models/RefreshToken.js");
+const isAuth = require("../Middleware/isAuth.js");
 
 // Register user
 const registerUser = async (req, res) => {
@@ -24,25 +30,15 @@ const registerUser = async (req, res) => {
     const token = createAccessToken(newUser._id);
     const refreshToken = createRefreshToken(newUser._id);
 
-    const userToken = await RefreshToken.create({
+    // store token in db
+    const newToken = await RefreshTokenModel.create({
       token: refreshToken,
       user: newUser._id,
     });
 
     // send tokens
-    res.cookie("token", refreshToken, {
-      withCredentials: true,
-      httpOnly: true,
-      sameSite: "None",
-      secure: "true",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
-    res.json({
-      message: "User registered successfully",
-      success: true,
-      accessToken: token,
-    });
+    sendRefreshToken(res, refreshToken);
+    sendAccessToken(res, req, token, "You are now registered.");
   } catch (err) {
     res.send({ error: err.message });
   }
@@ -53,6 +49,7 @@ const login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
+    // check for valid username and password
     if (!username || !password) {
       return res.json({ message: "All fields are required" });
     }
@@ -64,25 +61,102 @@ const login = async (req, res) => {
     if (!match) {
       return res.json({ message: "Incorrect password or username" });
     }
-    //const token = createAccessToken(myObjectIdString);
-    const refreshToken = createRefreshToken(user._id);
+
+    //create accesstoken/refreshtoken
+    const token = createAccessToken(user._id);
+    let refreshToken = createRefreshToken(user._id);
+    const findToken = await RefreshTokenModel.findOne({ user: user._id });
+
     // save token to db
+    const saveToken = async () => {
+      const saved = await RefreshTokenModel.create({
+        token: refreshToken,
+        user: user._id,
+      });
+    };
 
-    const userToken = await RefreshToken.create({
-      token: refreshToken,
-      user: user._id,
-    });
+    if (!findToken) {
+      saveToken();
+    } else {
+      const deleted = await RefreshTokenModel.deleteOne({ user: user._id });
+      saveToken();
+    }
 
-
-    res.json({ message: "You are logged in" });
+    //send both tokens
+    sendRefreshToken(res, refreshToken);
+    sendAccessToken(res, req, token, "You are logged in");
   } catch (err) {
     res.send({ error: err.message });
   }
 };
 
-module.exports = { registerUser, login };
+//logout
+const logout = async (req, res) => {
+  res.clearCookie("refreshtoken");
+  const deleted = await RefreshTokenModel.deleteOne({
+    token: req.cookies.refreshtoken,
+  });
+  return res.json({
+    message: "Logged out",
+  });
+};
 
-// {
-//     "username": "alextm19",
-//     "password": "Cheese01"
-// }
+// Protected route for testing - won't be real route.
+const protected = async (req, res) => {
+  try {
+    const userId = isAuth(req, res);
+    if (userId !== null) {
+      res.send({
+        data: "This is protected data.",
+      });
+    }
+  } catch (err) {
+    res.send({
+      error: `${err.message}`,
+    });
+  }
+};
+
+// Get new access token
+const refreshToken = async (req, res) => {
+  const token = req.cookies.refreshtoken;
+
+  if (!token) return res.send({ accesstoken: "" });
+
+  // verify token
+  let payload = null;
+  try {
+    payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+  } catch (err) {
+    return res.send({ message: "Couldn't verify token." });
+  }
+
+  const idToFind = new ObjectId(payload.id);
+   try {
+     // look for user
+     const user = await RefreshTokenModel.findOne({ user: idToFind });
+     console.log(user, 'user')
+     if (!user) return res.send({ accesstoken: "xdgsdf" });
+
+     // user.refreshtoken should equal token
+     if (user.token !== token) return res.send({ accesstoken: "sdf" });
+
+     // if refresh token exist, delete old/create new + save to db
+     const deleted = await RefreshTokenModel.deleteOne({ token: user.token });
+     const accesstoken = createAccessToken(user.user);
+     const refreshtoken = createRefreshToken(user.user);
+     const savedToken = await RefreshTokenModel.create({
+       token: refreshtoken,
+       user: payload.id,
+     });
+     // send tokens
+     sendRefreshToken(res, refreshtoken);
+     sendAccessToken(res, req, accesstoken, "access granted");
+   } catch (err) {
+     res.send({
+       error: `${err.message}`,
+     });
+   }
+};
+
+module.exports = { registerUser, login, logout, protected, refreshToken };
