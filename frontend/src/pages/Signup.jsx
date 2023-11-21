@@ -14,17 +14,21 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (username == "" || password == "") {
-       return toast("Required fields missing!");
+      return toast("Required fields missing!");
     }
 
     try {
-      const response = await axios.post("http://localhost:3000/signup", {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        "http://localhost:3000/signup",
+        {
+          username,
+          password,
+        },
+        { withCredentials: true }
+      );
 
-      const { success, message } = response.data;
-      terminal.log(response)
+      terminal.log(response.data, "response");
+      const { success, message, accessToken } = response.data;
 
       if (success) {
         toast(message, {
