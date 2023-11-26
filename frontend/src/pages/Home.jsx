@@ -4,7 +4,7 @@ import axios from "axios";
 import { terminal } from "virtual:terminal";
 import IssueList from "../components/IssueList";
 import Form from "../components/form";
-import handleInputChange from "../functions/handleInputChange";
+import handleInputChange from "../utils/handleInputChange";
 
 const Home = () => {
   const [issue, setIssue] = useState({
@@ -18,16 +18,17 @@ const Home = () => {
   const [list, setList] = useState([]);
 
   useEffect(() => {
-    const getIssues = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000");
-        setList(response.data);
-      } catch (err) {
-        terminal.log(err);
-      }
-    };
     getIssues();
-  }, [list]);
+  }, []);
+
+  const getIssues = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000");
+      setList(response.data);
+    } catch (err) {
+      terminal.log(err);
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -39,9 +40,8 @@ const Home = () => {
       alert("required fields missing!");
     } else {
       try {
-        await axios.post("http://localhost:3000", issue).then((res) => {
-          terminal.log(res.data);
-        });
+        await axios.post("http://localhost:3000", issue);
+        getIssues();
       } catch (error) {
         terminal.error(error);
       }
