@@ -3,11 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { terminal } from "virtual:terminal";
+import useAuth from "../hooks/useAuth";
 import axios from "axios";
 
 const Signup = () => {
-  const navigate = useNavigate();
+  const { setAuth } = useAuth();
 
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -19,16 +21,18 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/signup",
+        "http://localhost:3000/signup", //might need JSON.stringify before password??
         {
           username,
           password,
         },
-        { withCredentials: true }
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
       );
-
-      terminal.log(response.data, "response");
-      const { success, message, accessToken } = response.data;
+      const { success, message, accesstoken } = response.data;
+      setAuth(accesstoken);
 
       if (success) {
         toast(message, {
@@ -55,11 +59,9 @@ const Signup = () => {
           progress: undefined,
           theme: "light",
         });
-        setUsername("");
-        setPassword("");
       }
     } catch (error) {
-      terminal.log(error);
+      terminal.log(error.message);
     }
   };
 
