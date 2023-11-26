@@ -76,8 +76,10 @@ const login = async (req, res) => {
     };
 
     if (!findToken) {
+      console.log("here");
       saveToken();
     } else {
+      console.log("here2");
       const deleted = await RefreshTokenModel.deleteOne({ user: user._id });
       saveToken();
     }
@@ -92,13 +94,18 @@ const login = async (req, res) => {
 
 //logout
 const logout = async (req, res) => {
-  res.clearCookie("refreshtoken");
-  const deleted = await RefreshTokenModel.deleteOne({
-    token: req.cookies.refreshtoken,
-  });
-  return res.json({
-    message: "Logged out",
-  });
+  console.log(req.cookies, "refresh");
+  try {
+    res.clearCookie("refreshtoken", { httpOnly: true, sameSite: "None", secure: true });
+    const deleted = await RefreshTokenModel.deleteOne({
+      token: req.cookies.refreshtoken,
+    });
+    return res.json({
+      message: "Logged out",
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
 };
 
 // Protected route for testing - won't be real route.
@@ -120,6 +127,7 @@ const protected = async (req, res) => {
 // Get new access token
 const refreshToken = async (req, res) => {
   const token = req.cookies.refreshtoken;
+  console.log(token, "token");
 
   if (!token) return res.send({ accesstoken: "" });
 
@@ -132,31 +140,31 @@ const refreshToken = async (req, res) => {
   }
 
   const idToFind = new ObjectId(payload.id);
-   try {
-     // look for user
-     const user = await RefreshTokenModel.findOne({ user: idToFind });
-     console.log(user, 'user')
-     if (!user) return res.send({ accesstoken: "xdgsdf" });
+  try {
+    // look for user
+    const user = await RefreshTokenModel.findOne({ user: idToFind });
+    console.log(user, "user");
+    if (!user) return res.send({ accesstoken: "" });
 
-     // user.refreshtoken should equal token
-     if (user.token !== token) return res.send({ accesstoken: "sdf" });
+    // user.refreshtoken should equal token
+    if (user.token !== token) return res.send({ accesstoken: "" });
 
-     // if refresh token exist, delete old/create new + save to db
-     const deleted = await RefreshTokenModel.deleteOne({ token: user.token });
-     const accesstoken = createAccessToken(user.user);
-     const refreshtoken = createRefreshToken(user.user);
-     const savedToken = await RefreshTokenModel.create({
-       token: refreshtoken,
-       user: payload.id,
-     });
-     // send tokens
-     sendRefreshToken(res, refreshtoken);
-     sendAccessToken(res, req, accesstoken, "access granted");
-   } catch (err) {
-     res.send({
-       error: `${err.message}`,
-     });
-   }
+    // if refresh token exist, delete old/create new + save to db
+    //const deleted = await RefreshTokenModel.deleteOne({ token: user.token });
+    const accesstoken = createAccessToken(user.user);
+    //  const refreshtoken = createRefreshToken(user.user);
+    //  const savedToken = await RefreshTokenModel.create({
+    //    token: refreshtoken,
+    //    user: payload.id,
+    //  });
+    //  // send tokens
+    //  sendRefreshToken(res, refreshtoken);
+    sendAccessToken(res, req, accesstoken, "access granted");
+  } catch (err) {
+    res.send({
+      error: `${err.message}`,
+    });
+  }
 };
 
 module.exports = { registerUser, login, logout, protected, refreshToken };
