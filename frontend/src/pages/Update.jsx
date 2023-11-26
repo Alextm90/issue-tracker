@@ -3,12 +3,12 @@ import { terminal } from "virtual:terminal";
 import React, { useState } from "react";
 import Form from "../components/form";
 import axios from "axios";
-import handleInputChange from "../functions/handleInputChange";
+import handleInputChange from "../utils/handleInputChange";
 
 const Update = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const location = useLocation();
-  terminal.log(location.state)
+  terminal.log(location.state);
 
   const [issue, setIssue] = useState({
     _id: location.state._id,
@@ -23,8 +23,8 @@ const Update = () => {
     event.preventDefault();
     try {
       await axios.put("http://localhost:3000", issue);
-       alert("Issue successfully updated!");
-        navigate("/");
+      alert("Issue successfully updated!");
+      navigate("/");
     } catch (error) {
       terminal.error(error);
     }
