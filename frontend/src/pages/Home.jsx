@@ -5,8 +5,10 @@ import { terminal } from "virtual:terminal";
 import IssueList from "../components/IssueList";
 import Form from "../components/form";
 import handleInputChange from "../utils/handleInputChange";
+import useAxiosInstance from "../hooks/useAxiosInstance";
 
 const Home = () => {
+  const axiosInstance = useAxiosInstance()
   const [issue, setIssue] = useState({
     issue_title: "",
     issue_text: "",
@@ -18,6 +20,7 @@ const Home = () => {
   const [list, setList] = useState([]);
 
   useEffect(() => {
+     terminal.log(axiosInstance, "this");
     getIssues();
   }, []);
 
@@ -26,7 +29,7 @@ const Home = () => {
       const response = await axios.get("http://localhost:3000");
       setList(response.data);
     } catch (err) {
-      terminal.log(err);
+      terminal.log(err.message);
     }
   };
 
@@ -40,7 +43,7 @@ const Home = () => {
       alert("required fields missing!");
     } else {
       try {
-        await axios.post("http://localhost:3000", issue);
+        await axiosInstance.post("/", issue);
         getIssues();
       } catch (error) {
         terminal.error(error);
