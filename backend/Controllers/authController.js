@@ -9,7 +9,7 @@ const {
   sendRefreshToken,
 } = require("../Util/tokens.js");
 const RefreshTokenModel = require("../Models/RefreshToken.js");
-const isAuth = require("../Middleware/isAuth.js");
+const isAuth = require("../Middleware/verifyToken.js");
 
 // Register user
 const registerUser = async (req, res) => {
