@@ -2,12 +2,14 @@ import axios from "axios";
 import useAuth from "./useAuth";
 import { useEffect } from "react";
 import { axiosInstance } from "../api/axiosInstance";
+import { terminal } from "virtual:terminal";
 
 const useAxiosInstance = () => {
-  const { auth } = useAuth();
+  const { auth, setAuth } = useAuth();
 
   useEffect(() => {
-    const request = axiosInstance.interceptors.request.use(
+    // request interceptor
+    const requestInterceptor = axiosInstance.interceptors.request.use(
       (config) => {
         if (!config.headers["Authorization"]) {
           config.headers["Authorization"] = `Bearer ${auth}`;
@@ -16,9 +18,41 @@ const useAxiosInstance = () => {
       },
       (error) => Promise.reject(error)
     );
-  }, []);
-   return axiosInstance
+
+    // response interceptor
+    const responseInterceptor = axiosInstance.interceptors.response.use(
+      response => response,
+      async (error) => {
+        const originalRequest = error.config;
+        // check for failed request
+        if (error.response.status === 403 && !originalRequest?._retry) {
+          console.log("here");
+          originalRequest._retry = true;
+          // Get new access token + update state
+            const accessToken = await axios.get(
+              "http://localhost:3000/refreshtoken",
+              {
+                withCredentials: true,
+              }
+            );
+            const { accesstoken } = accessToken.data;
+            setAuth(accesstoken);
+            // Retry the original request with the new acccess token
+            originalRequest.headers["Authorization"] = `Bearer ${accesstoken}`;
+            return axiosInstance(originalRequest);
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      axiosInstance.interceptors.request.eject(requestInterceptor);
+      axiosInstance.interceptors.response.eject(responseInterceptor);
+    };
+  }, [auth]);
+
+
+  return axiosInstance;
 };
 
 export default useAxiosInstance;
-
