@@ -3,16 +3,15 @@ import axios from "axios";
 import { terminal } from "virtual:terminal";
 import { useNavigate } from "react-router-dom";
 
-const IssueList = ({ list }) => {
+const IssueList = ({ list, setList }) => {
   const navigate = useNavigate();
-  
-  //state for id
-  const [issueId, setIssueId] = useState("");
 
   const handleDeleteIssue = async (e) => {
     e.preventDefault();
     try {
       await axios.delete(`http://localhost:3000/${e.target.value}`);
+      const response = await axios.get("http://localhost:3000");
+      setList(response.data);
     } catch (error) {
       terminal.error(error);
     }
@@ -24,6 +23,8 @@ const IssueList = ({ list }) => {
         _id: e.target.value,
         open: false,
       });
+      const response = await axios.get("http://localhost:3000");
+      setList(response.data);
     } catch (error) {
       terminal.error(error);
     }
