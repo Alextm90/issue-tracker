@@ -4,6 +4,7 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const db = require("../Config/dbconnect.js");
 const express = require("express");
 const router = express.Router();
+const verifyToken = require("../Middleware/verifyToken.js");
 
 router
   .route("/")
@@ -37,10 +38,10 @@ router
   })
 
   //post request
-  .post(function (req, res) {
+  .post(verifyToken, function (req, res) {
     const { issue_title, issue_text, created_by, assigned_to, status_text } =
       req.body;
-  
+
     //check for requirements
     if (issue_text == "" || issue_title == "" || created_by == "") {
       console.log(res);
@@ -83,26 +84,23 @@ router
 
   //put request for updating issues
   .put(async function (req, res) {
-    let project = req.params.project;
+    const { issue_title, issue_text, created_by, assigned_to, status_text } =
+      req.body;
     const id = req.body._id;
 
-    console.log(req.body, "bodyy");
     //check for missing id
     if (!id) {
-      res.json({ error: "missing _id" });
-      return;
+      return res.json({ error: "missing _id" });
     }
 
     if (
-      req.body.open == "true" &&
-      req.body.issue_title == "" &&
-      req.body.issue_text == "" &&
-      req.body.created_by == "" &&
-      req.body.assigned_to == "" &&
-      req.body.status_text == ""
+      issue_title == "" &&
+      issue_text == "" &&
+      created_by == "" &&
+      assigned_to == "" &&
+      status_text == ""
     ) {
-      res.json({ error: "no update field(s) sent", _id: req.body._id });
-      return;
+      return res.json({ error: "no update field(s) sent", _id: req.body._id });
     }
 
     if (ObjectId.isValid(id)) {
@@ -164,3 +162,4 @@ router.route("/:id").delete(async function (req, res) {
 });
 
 module.exports = router;
+
