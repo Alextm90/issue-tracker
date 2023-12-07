@@ -8,15 +8,16 @@ import handleInputChange from "../utils/handleInputChange";
 const Update = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  terminal.log(location.state);
+ 
+  const { issue_title, issue_text, created_by, assigned_to, status_text } = location.state
 
   const [issue, setIssue] = useState({
     _id: location.state._id,
-    issue_title: location.state.issue_title,
-    issue_text: location.state.issue_text,
-    created_by: location.state.created_by,
-    assigned_to: location.state.assigned_to,
-    status_text: location.state.status_text,
+    issue_title: issue_title,
+    issue_text:  issue_text,
+    created_by:  created_by,
+    assigned_to: assigned_to,
+    status_text: status_text,
   });
 
   const handleSubmit = async (event) => {
