@@ -127,7 +127,7 @@ const protected = async (req, res) => {
 // Get new access token
 const refreshToken = async (req, res) => {
   const token = req.cookies.refreshtoken;
-  console.log(token, "token");
+  console.log(token, "tokenn");
 
   if (!token) return res.send({ accesstoken: "" });
 
@@ -136,6 +136,7 @@ const refreshToken = async (req, res) => {
   try {
     payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
   } catch (err) {
+    console.log("problem here")
     return res.send({ message: "Couldn't verify token." });
   }
 
@@ -149,16 +150,8 @@ const refreshToken = async (req, res) => {
     // user.refreshtoken should equal token
     if (user.token !== token) return res.send({ accesstoken: "" });
 
-    // if refresh token exist, delete old/create new + save to db
-    //const deleted = await RefreshTokenModel.deleteOne({ token: user.token });
     const accesstoken = createAccessToken(user.user);
-    //  const refreshtoken = createRefreshToken(user.user);
-    //  const savedToken = await RefreshTokenModel.create({
-    //    token: refreshtoken,
-    //    user: payload.id,
-    //  });
-    //  // send tokens
-    //  sendRefreshToken(res, refreshtoken);
+    console.log(accesstoken, "new token")
     sendAccessToken(res, req, accesstoken, "access granted");
   } catch (err) {
     res.send({
