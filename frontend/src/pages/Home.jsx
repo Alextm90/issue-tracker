@@ -20,7 +20,6 @@ const Home = () => {
   const [list, setList] = useState([]);
 
   useEffect(() => {
-     terminal.log(axiosInstance, "this");
     getIssues();
   }, []);
 
@@ -46,7 +45,7 @@ const Home = () => {
         await axiosInstance.post("/", issue);
         getIssues();
       } catch (error) {
-        terminal.error(error);
+        terminal.error(error.message);
       }
       setIssue({
         issue_title: "",
