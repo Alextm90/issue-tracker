@@ -11,9 +11,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.post(
+        const response = await axios.get(
           "http://localhost:3000/refreshtoken",
-          null,
           {
             withCredentials: true,
           }
