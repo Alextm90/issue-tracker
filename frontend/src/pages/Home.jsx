@@ -45,7 +45,7 @@ const Home = () => {
         await axiosInstance.post("/", issue);
         getIssues();
       } catch (error) {
-        terminal.error(error.message);
+        terminal.log(error)
       }
       setIssue({
         issue_title: "",
