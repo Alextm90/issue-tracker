@@ -12,7 +12,7 @@ suite("Functional Tests", async function () {
   let accessToken;
   let id;
   // #1
-  test("Create new user + get access token", async () => {
+  test("should receive You are now registered message.", async () => {
     const response = await axios.post("http://localhost:3000/signup", {
       username,
       password,
@@ -24,7 +24,7 @@ suite("Functional Tests", async function () {
   });
 
   // #2
-  test("Create an issue with every field", async () => {
+  test("should create an issue with every field", async () => {
     const res = await axios.post(
       "http://localhost:3000/",
       {
@@ -49,7 +49,7 @@ suite("Functional Tests", async function () {
   });
 
   // #3
-  test("Create an issue with only required fields", async () => {
+  test("should create an issue with only required fields", async () => {
     const res = await axios.post(
       "http://localhost:3000/",
       {
@@ -63,102 +63,73 @@ suite("Functional Tests", async function () {
         },
       }
     );
+    id = res.data._id
     assert.equal(res.status, 200);
     assert.equal(res.data.issue_title, "Issue1");
     assert.equal(res.data.issue_text, "test-text");
     assert.equal(res.data.created_by, "test-user");
   });
 
-  // //#3
-  // test("Create an issue with missing required fields", (done) => {
-  //   chai
-  //     .request(server)
-  //     .post("/api/issues/test-project")
-  //     .send({
-  //       issue_title: "Issue3",
-  //       issue_text: "test-text",
-  //     })
-  //     .end((err, res) => {
-  //       assert.equal(res.body.error, "required field(s) missing");
-  //       done();
-  //     });
-  // });
+  // #4
+  test("should receive 400 error with missing required fields", async () => {
+    const res = await axios
+      .post(
+        "http://localhost:3000/",
+        {
+          issue_title: "Issue1",
+          issue_text: "test-text",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        assert.equal(error.response.status, 400);
+      });
+  });
 
-  // //#4
-  // test("View issues on a project", (done) => {
-  //   chai
-  //     .request(server)
-  //     .get("/api/issues/test-project")
-  //     .end((err, res) => {
-  //       assert.equal(res.status, 200);
-  //       assert.isArray(res.body);
-  //       assert.property(res.body[0], "_id");
-  //       assert.property(res.body[0], "issue_title");
-  //       assert.property(res.body[0], "issue_text");
-  //       assert.property(res.body[0], "created_on");
-  //       assert.property(res.body[0], "updated_on");
-  //       assert.property(res.body[0], "created_by");
-  //       assert.property(res.body[0], "assigned_to");
-  //       assert.property(res.body[0], "open");
-  //       assert.property(res.body[0], "status_text");
-  //       assert.property(res.body[0], "project");
-  //       console.log(res.body);
-  //       done();
-  //     });
-  // });
+  // #5
+  test("should return an array of project(s) w/ specific properties", async () => {
+    const res = await axios.get("http://localhost:3000/", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    assert.equal(res.status, 200);
+    assert.isArray(res.data);
+    assert.property(res.data[0], "_id");
+    assert.property(res.data[0], "issue_title");
+    assert.property(res.data[0], "issue_text");
+    assert.property(res.data[0], "created_on");
+    assert.property(res.data[0], "updated_on");
+    assert.property(res.data[0], "created_by");
+    assert.property(res.data[0], "assigned_to");
+    assert.property(res.data[0], "open");
+    assert.property(res.data[0], "status_text");
+  });
 
-  // //#5
-  // test("View issues on a project with one filter", (done) => {
-  //   chai
-  //     .request(server)
-  //     .get("/api/issues/test-project")
-  //     .query({ created_by: "test" })
-  //     .end((err, res) => {
-  //       console.log(res.body);
-  //       assert.equal(res.status, 200);
-  //       res.body.forEach((element) => {
-  //         assert.equal(element.created_by, "Alex");
-  //       });
-  //       done();
-  //     });
-  // });
-
-  // //#6
-  // test("View issues on a project with multiple filters", (done) => {
-  //   chai
-  //     .request(server)
-  //     .get("/api/issues/test-project")
-  //     .query({
-  //       created_by: "Alex",
-  //       assigned_to: "Mike",
-  //       issue_text: "test-text",
-  //     })
-  //     .end((err, res) => {
-  //       console.log(res.body, "res");
-  //       assert.equal(res.status, 200);
-  //       res.body.forEach((element) => {
-  //         assert.equal(element.created_by, "Alex");
-  //         assert.equal(element.assigned_to, "Mike");
-  //         assert.equal(element.issue_text, "test-text");
-  //       });
-  //       done();
-  //     });
-  // });
-
-  // //#7
-  // test("Update one field on an issue", (done) => {
-  //   chai
-  //     .request(server)
-  //     .put("/api/issues/test-project")
-  //     .send({
-  //       _id: id,
-  //       issue_title: "new issue text",
-  //     })
-  //     .end((err, res) => {
-  //       assert.equal(res.body.result, "successfully updated");
-  //       done();
-  //     });
-  // });
+  // #6
+  test("should update one field on an issue and return successfully updated", async () => {
+    const res = await axios.put(
+      "http://localhost:3000/",
+      {
+        _id: id,
+        issue_title: "new issue text",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    assert.equal(res.status, 200);
+    assert.equal(res.data.result, "successfully updated");
+  });
 
   // //#8
   // test("Update multiple fields on an issue", (done) => {
