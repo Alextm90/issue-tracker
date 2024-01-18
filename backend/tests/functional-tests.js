@@ -1,16 +1,21 @@
 const chaiHttp = require("chai-http");
 const chai = require("chai");
 const assert = chai.assert;
-const server = require("../server");
 const axios = require("axios");
+require("../server");
 
 chai.use(chaiHttp);
 
 suite("Functional Tests", async function () {
+  suiteTeardown(() => {
+    console.log("done")
+  })
+
   const username = "testUser";
   const password = "testPassword";
   let accessToken;
   let id;
+
   // #1
   test("should receive You are now registered message.", async () => {
     const response = await axios.post("http://localhost:3000/signup", {
@@ -63,7 +68,7 @@ suite("Functional Tests", async function () {
         },
       }
     );
-    id = res.data._id
+    id = res.data._id;
     assert.equal(res.status, 200);
     assert.equal(res.data.issue_title, "Issue1");
     assert.equal(res.data.issue_text, "test-text");
@@ -71,7 +76,7 @@ suite("Functional Tests", async function () {
   });
 
   // #4
-  test("should receive 400 error with missing required fields", async () => {
+  test("should retrun 400 error with missing required fields", async () => {
     const res = await axios
       .post(
         "http://localhost:3000/",
@@ -131,106 +136,162 @@ suite("Functional Tests", async function () {
     assert.equal(res.data.result, "successfully updated");
   });
 
-  // //#8
-  // test("Update multiple fields on an issue", (done) => {
-  //   chai
-  //     .request(server)
-  //     .put("/api/issues/test-project")
-  //     .send({
-  //       _id: id,
-  //       issue_title: "Issue",
-  //       issue_text: "updated issue",
-  //     })
-  //     .end((err, res) => {
-  //       assert.equal(res.body.result, "successfully updated");
-  //       done();
-  //     });
-  // });
+  // #7
+  test("should update multiple fields on an issue and return 'successfully updated'", async () => {
+    const res = await axios.put(
+      "http://localhost:3000/",
+      {
+        _id: id,
+        issue_title: "Issue",
+        issue_text: "updated issue",
+        assigned_to: "Mike",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    assert.equal(res.status, 200);
+    assert.equal(res.data.result, "successfully updated");
+  });
 
-  // //#9
-  // test("Update an issue with missing _id", (done) => {
-  //   chai
-  //     .request(server)
-  //     .put("/api/issues/test-project")
-  //     .send({
-  //       issue_text: "updated issue",
-  //     })
-  //     .end((err, res) => {
-  //       console.log(res, "res");
-  //       assert.equal(res.body.error, "missing _id");
-  //       done();
-  //     });
-  // });
+  // #8
+  test("update issue with missing id should return 400 error", async () => {
+    const res = await axios
+      .put(
+        "http://localhost:3000/",
+        {
+          issue_title: "Issue1",
+          issue_text: "test-text",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        assert.equal(error.response.data.error, "missing _id");
+        assert.equal(error.response.status, 400);
+      });
+  });
 
-  // //#10
-  // test("Update an issue with no fields", (done) => {
-  //   chai
-  //     .request(server)
-  //     .put("/api/issues/test-project")
-  //     .send({
-  //       _id: id,
-  //     })
-  //     .end((err, res) => {
-  //       assert.equal(res.body.error, "no update field(s) sent");
-  //       done();
-  //     });
-  // });
+  // #9
+  test("update issue with empty fields should return 400 error", async () => {
+    const res = await axios
+      .put(
+        "http://localhost:3000/",
+        {
+          _id: id,
+          issue_title: "",
+          issue_text: "",
+          created_by: "",
+          assigned_to: "",
+          status_text: "",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res, "res");
+      })
+      .catch((error) => {
+        assert.equal(error.response.data.error, "no update field(s) sent");
+        assert.equal(error.response.status, 400);
+      });
+  });
 
-  // //#11
-  // test("Update an issue with an invalid _id", (done) => {
-  //   chai
-  //     .request(server)
-  //     .put("/api/issues/test-project")
-  //     .send({
-  //       _id: "jfj4853k494",
-  //       issue_title: "new issue text",
-  //     })
-  //     .end((err, res) => {
-  //       console.log(res, "res");
-  //       assert.equal(res.body.error, "could not update");
-  //       done();
-  //     });
-  // });
+  // #10
+  test("update issue with invalid id should return 400 error", async () => {
+    const res = await axios
+      .put(
+        "http://localhost:3000/",
+        {
+          _id: "jfj4853k494",
+          issue_title: "new title",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        assert.equal(error.response.data.error, "could not update");
+        assert.equal(error.response.status, 400);
+      });
+  });
 
-  // //12
-  // test("Delete an issue", (done) => {
-  //   chai
-  //     .request(server)
-  //     .delete("/api/issues/test-project")
-  //     .send({
-  //       _id: id,
-  //     })
-  //     .end((err, res) => {
-  //       assert.equal(res.body.result, "successfully deleted");
-  //       done();
-  //     });
-  // });
+  // #11
+  test("delete an issue should return 'successfully deleted'", async () => {
+    const res = await axios.delete(`http://localhost:3000/${id}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    console.log(res, "res");
+    assert.equal(res.data.result, "successfully deleted");
+    assert.equal(res.status, 200);
+  });
 
-  // //13
-  // test("Delete an issue with and invalid _id", (done) => {
-  //   chai
-  //     .request(server)
-  //     .delete("/api/issues/test-project")
-  //     .send({
-  //       _id: "jfj4853k494",
-  //     })
-  //     .end((err, res) => {
-  //       console.log(res, "res");
-  //       assert.equal(res.body.error, "could not delete");
-  //       done();
-  //     });
-  // });
+  // #12
+  test("delete issue with invalid id should return 400 error", async () => {
+    const res = await axios
+      .delete(`http://localhost:3000/${"jfj4853k494"}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error, "error");
+        assert.equal(error.response.data.error, "could not delete");
+        assert.equal(error.response.status, 400);
+      });
+  });
 
-  // //14
-  // test("Delete an issue with a missing _id", (done) => {
-  //   chai
-  //     .request(server)
-  //     .delete("/api/issues/test-project")
-  //     .send({})
-  //     .end((err, res) => {
-  //       console.log(res, "res");
-  //       assert.equal(res.body.error, "missing _id");
-  //       done();
-  //     });
-  // });
+  // #13
+  test("delete issue with no id should return 400 error", async () => {
+    const res = await axios
+      .delete("http://localhost:3000/{}", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        assert.equal(error.response.data.error, "missing _id");
+        assert.equal(error.response.status, 400);
+      });
+  });
+
+  // #14
+  test("logout route should return success message", async () => {
+    const res = await axios.post("http://localhost:3000/logout", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    assert.equal(res.status, 200);
+    assert.equal(res.data.message, "You have successfully logged out!");
+  });
+
+    after(function () {
+      console.log("done");
+    });
+
 });
