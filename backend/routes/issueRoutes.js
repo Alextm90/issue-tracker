@@ -43,10 +43,10 @@ router
       req.body;
 
     //check for requirements
-    if (issue_text == "" || issue_title == "" || created_by == "") {
-      console.log(res);
-      res.json({ error: "required field(s) missing" });
-      return;
+    if (issue_text == "" || issue_title == "" || !created_by) {
+      return res
+        .status(400)
+        .json({ error: "required field(s) missing", success: false });
     }
 
     //create instance of issue
@@ -86,11 +86,12 @@ router
   .put(async function (req, res) {
     const { issue_title, issue_text, created_by, assigned_to, status_text } =
       req.body;
+      console.log(req.body, "body")
     const id = req.body._id;
 
     //check for missing id
     if (!id) {
-      return res.json({ error: "missing _id" });
+      return res.status(400).json({ error: "missing _id", success: false });
     }
 
     if (
@@ -100,7 +101,8 @@ router
       assigned_to == "" &&
       status_text == ""
     ) {
-      return res.json({ error: "no update field(s) sent", _id: req.body._id });
+      console.log("got here")
+      return res.status(400).json({ error: "no update field(s) sent", _id: req.body._id });
     }
 
     if (ObjectId.isValid(id)) {
@@ -129,7 +131,7 @@ router
         console.log(err);
       }
     } else {
-      res.json({ error: "could not update", _id: id });
+      res.status(400).json({ error: "could not update", _id: id });
     }
   });
 
@@ -138,9 +140,8 @@ router.route("/:id").delete(async function (req, res) {
   const { id } = req.params;
 
   //check for missing id
-  if (!id) {
-    res.json({ error: "missing _id" });
-    return;
+  if (!id || id == '{}') {
+    return res.status(400).json({ error: "missing _id" })
   }
   //check for valid id
   if (ObjectId.isValid(id)) {
@@ -157,9 +158,8 @@ router.route("/:id").delete(async function (req, res) {
       console.log(error);
     }
   } else {
-    res.json({ error: "could not delete", _id: id });
+    res.status(400).json({ error: "could not delete", _id: id });
   }
 });
 
 module.exports = router;
-
