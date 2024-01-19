@@ -101,7 +101,7 @@ const logout = async (req, res) => {
       token: req.cookies.refreshtoken,
     });
     return res.json({
-      message: "Logged out",
+      message: "You have successfully logged out!",
     });
   } catch (error) {
     console.log(error.message);
