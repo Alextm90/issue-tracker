@@ -1,4 +1,5 @@
-//import React from 'react'
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { terminal } from "virtual:terminal";
@@ -8,7 +9,7 @@ import handleInputChange from "../utils/handleInputChange";
 import useAxiosInstance from "../hooks/useAxiosInstance";
 
 const Home = () => {
-  const axiosInstance = useAxiosInstance()
+  const axiosInstance = useAxiosInstance();
   const [issue, setIssue] = useState({
     issue_title: "",
     issue_text: "",
@@ -26,6 +27,7 @@ const Home = () => {
   const getIssues = async () => {
     try {
       const response = await axios.get("http://localhost:3000");
+      terminal.log(response, "data here")
       setList(response.data);
     } catch (err) {
       terminal.log(err.message);
@@ -34,27 +36,29 @@ const Home = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (
-      issue.issue_title == "" ||
-      issue.issue_text == "" ||
-      issue.created_by == ""
-    ) {
-      alert("required fields missing!");
-    } else {
-      try {
-        await axiosInstance.post("/", issue);
-        getIssues();
-      } catch (error) {
-        terminal.log(error)
-      }
-      setIssue({
-        issue_title: "",
-        issue_text: "",
-        created_by: "",
-        assigned_to: "",
-        status_text: "",
+    try {
+      const response = await axiosInstance.post("/", issue);
+      const { success } = response.data;
+      getIssues();
+    } catch (error) {
+      toast("Please enter required fields!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
       });
     }
+    setIssue({
+      issue_title: "",
+      issue_text: "",
+      created_by: "",
+      assigned_to: "",
+      status_text: "",
+    });
   };
 
   return (
@@ -71,6 +75,7 @@ const Home = () => {
       <div>
         <IssueList list={list} setList={setList} />
       </div>
+      <ToastContainer />
     </div>
   );
 };
