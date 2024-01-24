@@ -7,16 +7,12 @@ require("../server");
 chai.use(chaiHttp);
 
 suite("Functional Tests", async function () {
-  suiteTeardown(() => {
-    console.log("done")
-  })
-
   const username = "testUser";
   const password = "testPassword";
   let accessToken;
   let id;
+  let id_two;
 
-  // #1
   test("should receive You are now registered message.", async () => {
     const response = await axios.post("http://localhost:3000/signup", {
       username,
@@ -28,7 +24,6 @@ suite("Functional Tests", async function () {
     assert.equal(message, "You are now registered.");
   });
 
-  // #2
   test("should create an issue with every field", async () => {
     const res = await axios.post(
       "http://localhost:3000/",
@@ -45,6 +40,7 @@ suite("Functional Tests", async function () {
         },
       }
     );
+    id_two = res.data._id;
     assert.equal(res.status, 200);
     assert.equal(res.data.issue_title, "Issue1");
     assert.equal(res.data.issue_text, "test-text");
@@ -53,7 +49,6 @@ suite("Functional Tests", async function () {
     assert.equal(res.data.status_text, "status-text");
   });
 
-  // #3
   test("should create an issue with only required fields", async () => {
     const res = await axios.post(
       "http://localhost:3000/",
@@ -75,7 +70,6 @@ suite("Functional Tests", async function () {
     assert.equal(res.data.created_by, "test-user");
   });
 
-  // #4
   test("should retrun 400 error with missing required fields", async () => {
     const res = await axios
       .post(
@@ -98,7 +92,6 @@ suite("Functional Tests", async function () {
       });
   });
 
-  // #5
   test("should return an array of project(s) w/ specific properties", async () => {
     const res = await axios.get("http://localhost:3000/", {
       headers: {
@@ -118,7 +111,6 @@ suite("Functional Tests", async function () {
     assert.property(res.data[0], "status_text");
   });
 
-  // #6
   test("should update one field on an issue and return successfully updated", async () => {
     const res = await axios.put(
       "http://localhost:3000/",
@@ -136,7 +128,6 @@ suite("Functional Tests", async function () {
     assert.equal(res.data.result, "successfully updated");
   });
 
-  // #7
   test("should update multiple fields on an issue and return 'successfully updated'", async () => {
     const res = await axios.put(
       "http://localhost:3000/",
@@ -156,7 +147,6 @@ suite("Functional Tests", async function () {
     assert.equal(res.data.result, "successfully updated");
   });
 
-  // #8
   test("update issue with missing id should return 400 error", async () => {
     const res = await axios
       .put(
@@ -180,7 +170,6 @@ suite("Functional Tests", async function () {
       });
   });
 
-  // #9
   test("update issue with empty fields should return 400 error", async () => {
     const res = await axios
       .put(
@@ -200,7 +189,7 @@ suite("Functional Tests", async function () {
         }
       )
       .then((res) => {
-        console.log(res, "res");
+        console.log(res);
       })
       .catch((error) => {
         assert.equal(error.response.data.error, "no update field(s) sent");
@@ -208,7 +197,6 @@ suite("Functional Tests", async function () {
       });
   });
 
-  // #10
   test("update issue with invalid id should return 400 error", async () => {
     const res = await axios
       .put(
@@ -232,19 +220,16 @@ suite("Functional Tests", async function () {
       });
   });
 
-  // #11
   test("delete an issue should return 'successfully deleted'", async () => {
     const res = await axios.delete(`http://localhost:3000/${id}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    console.log(res, "res");
     assert.equal(res.data.result, "successfully deleted");
     assert.equal(res.status, 200);
   });
 
-  // #12
   test("delete issue with invalid id should return 400 error", async () => {
     const res = await axios
       .delete(`http://localhost:3000/${"jfj4853k494"}`, {
@@ -256,13 +241,11 @@ suite("Functional Tests", async function () {
         console.log(res);
       })
       .catch((error) => {
-        console.log(error, "error");
         assert.equal(error.response.data.error, "could not delete");
         assert.equal(error.response.status, 400);
       });
   });
 
-  // #13
   test("delete issue with no id should return 400 error", async () => {
     const res = await axios
       .delete("http://localhost:3000/{}", {
@@ -290,8 +273,12 @@ suite("Functional Tests", async function () {
     assert.equal(res.data.message, "You have successfully logged out!");
   });
 
-    after(function () {
-      console.log("done");
+  // clear database of project
+  suiteTeardown(async () => {
+    const res = await axios.delete(`http://localhost:3000/${id_two}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     });
-
+  });
 });
