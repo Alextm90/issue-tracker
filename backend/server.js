@@ -1,8 +1,8 @@
 "use strict";
 const express = require("express");
 const cors = require("cors");
-const issue = require("./Routes/issueRoutes.js");
-const user = require("./Routes/authRoutes.js");
+const issue = require("./routes/issueRoutes.js");
+const user = require("./routes/authRoutes.js");
 const app = express();
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
