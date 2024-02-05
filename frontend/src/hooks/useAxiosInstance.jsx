@@ -18,7 +18,7 @@ const useAxiosInstance = () => {
       },
       (error) => Promise.reject(error)
     );
-
+    
     // response interceptor
     const responseInterceptor = axiosInstance.interceptors.response.use(
       response => response,
@@ -26,7 +26,6 @@ const useAxiosInstance = () => {
         const originalRequest = error.config;
         // check for failed request
         if (error.response.status === 403 && !originalRequest?._retry) {
-          console.log("here");
           originalRequest._retry = true;
           // Get new access token + update state
             const accessToken = await axios.get(
