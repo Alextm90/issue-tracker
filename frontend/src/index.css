@@ -58,9 +58,14 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-.issue {
+.open-issue {
   margin: 1rem;
   border: 3px solid aqua
+}
+
+.closed-issue {
+  margin: 1rem;
+  border: 3px solid pink
 }
 
 @media (prefers-color-scheme: light) {
@@ -75,3 +80,6 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+
+  
