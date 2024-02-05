@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
     const checkAuth = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/refreshtoken",
+          "https://issue-tracker-nwp9.onrender.com/refreshtoken",
           {
             withCredentials: true,
           }

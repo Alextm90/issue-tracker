@@ -23,7 +23,7 @@ const Update = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.put("http://localhost:3000", issue);
+      await axios.put("https://issue-tracker-nwp9.onrender.com", issue);
       alert("Issue successfully updated!");
       navigate("/");
     } catch (error) {

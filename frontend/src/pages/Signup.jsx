@@ -21,7 +21,7 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/signup", 
+        "https://issue-tracker-nwp9.onrender.com/signup",
         {
           username,
           password,

@@ -26,8 +26,9 @@ const Home = () => {
 
   const getIssues = async () => {
     try {
-      const response = await axios.get("http://localhost:3000");
-      terminal.log(response, "data here")
+      const response = await axios.get(
+        "https://issue-tracker-nwp9.onrender.com"
+      );
       setList(response.data);
     } catch (err) {
       terminal.log(err.message);

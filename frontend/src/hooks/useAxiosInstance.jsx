@@ -2,7 +2,6 @@ import axios from "axios";
 import useAuth from "./useAuth";
 import { useEffect } from "react";
 import { axiosInstance } from "../api/axiosInstance";
-import { terminal } from "virtual:terminal";
 
 const useAxiosInstance = () => {
   const { auth, setAuth } = useAuth();
@@ -29,7 +28,7 @@ const useAxiosInstance = () => {
           originalRequest._retry = true;
           // Get new access token + update state
             const accessToken = await axios.get(
-              "http://localhost:3000/refreshtoken",
+              "https://issue-tracker-nwp9.onrender.com/refreshtoken",
               {
                 withCredentials: true,
               }

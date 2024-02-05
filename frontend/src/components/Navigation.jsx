@@ -11,9 +11,13 @@ const Navigation = () => {
   const logOut = async () => {
     setAuth(null);
     try {
-      const response = await axios.post("http://localhost:3000/logout", null, {
-        withCredentials: true,
-      });
+      const response = await axios.post(
+        "https://issue-tracker-nwp9.onrender.com/logout",
+        null,
+        {
+          withCredentials: true,
+        }
+      );
       terminal.log(response, "response")
       setTimeout(() => {
         navigate("/login");
@@ -32,4 +36,4 @@ const Navigation = () => {
 
 export default Navigation;
 
-//<button onClick={logOut}>Log Out</button>;
+
