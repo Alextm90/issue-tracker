@@ -8,7 +8,7 @@ const {
   sendAccessToken,
   sendRefreshToken,
 } = require("../Util/tokens.js");
-const RefreshTokenModel = require("../Models/RefreshToken.js");
+const RefreshTokenModel = require("../Models/refreshToken.js");
 const isAuth = require("../Middleware/verifyToken.js");
 
 // Register user
