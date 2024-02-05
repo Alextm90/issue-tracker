@@ -86,7 +86,6 @@ router
   .put(async function (req, res) {
     const { issue_title, issue_text, created_by, assigned_to, status_text } =
       req.body;
-      console.log(req.body, "body")
     const id = req.body._id;
 
     //check for missing id
@@ -101,7 +100,6 @@ router
       assigned_to == "" &&
       status_text == ""
     ) {
-      console.log("got here")
       return res.status(400).json({ error: "no update field(s) sent", _id: req.body._id });
     }
 
@@ -109,7 +107,7 @@ router
       try {
         const foundIssue = await Issue.findById(id);
         if (foundIssue) {
-          let issueId = foundIssue._id.toString(); //just added
+          let issueId = foundIssue._id.toString(); 
           //update values
           for (const key in req.body) {
             foundIssue[key] = req.body[key];
@@ -118,7 +116,6 @@ router
           const savedObj = await foundIssue.save();
 
           if (savedObj) {
-            console.log("saved");
             res.json({
               result: "successfully updated",
               _id: id,
@@ -149,7 +146,6 @@ router.route("/:id").delete(async function (req, res) {
       const foundIssue = await Issue.findById(id);
       if (foundIssue) {
         const deletedIssue = await Issue.deleteOne({ _id: id });
-        console.log(deletedIssue);
         res.json({ result: "successfully deleted", _id: id });
       } else {
         res.json({ error: "could not delete", _id: id });
