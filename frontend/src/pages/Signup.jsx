@@ -21,7 +21,7 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/signup", //might need JSON.stringify before password??
+        "http://localhost:3000/signup", 
         {
           username,
           password,
