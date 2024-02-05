@@ -17,7 +17,6 @@ export const AuthProvider = ({ children }) => {
             withCredentials: true,
           }
         );
-        terminal.log(response.data, "data here");
         setAuth(response.data.accesstoken);
       } catch (error) {
         terminal.log(error.message, "errorhere");
