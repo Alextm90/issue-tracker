@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Update from "./pages/Update";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Navigation from "./components/navigation.jsx";
+import Navigation from "./components/Navigation.jsx";
 import { AuthProvider } from "./utils/AuthProvider.jsx";
 import RequireAuth from "./components/RequireAuth.jsx";
 import "./App.css";
