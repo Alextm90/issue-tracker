@@ -14,28 +14,22 @@ const isAuth = require("../Middleware/verifyToken.js");
 // Register user
 const registerUser = async (req, res) => {
   const { username, password } = req.body;
-
   try {
     const user = await User.findOne({ username });
-
     if (user) {
       return res.json({ message: "Username already taken", success: false });
     }
-
     // create password/user
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({ username, password: hashedPassword });
-
     // create tokens
     const token = createAccessToken(newUser._id);
     const refreshToken = createRefreshToken(newUser._id);
-
     // store token in db
     const newToken = await RefreshTokenModel.create({
       token: refreshToken,
       user: newUser._id,
     });
-
     // send tokens
     sendRefreshToken(res, refreshToken);
     sendAccessToken(res, req, token, "You are now registered.");
@@ -47,7 +41,6 @@ const registerUser = async (req, res) => {
 // login
 const login = async (req, res) => {
   const { username, password } = req.body;
-
   try {
     // check for valid username and password
     if (!username || !password) {
@@ -61,12 +54,10 @@ const login = async (req, res) => {
     if (!match) {
       return res.json({ message: "Incorrect password or username" });
     }
-
     //create accesstoken/refreshtoken
     const token = createAccessToken(user._id);
     let refreshToken = createRefreshToken(user._id);
     const findToken = await RefreshTokenModel.findOne({ user: user._id });
-
     // save token to db
     const saveToken = async () => {
       const saved = await RefreshTokenModel.create({
@@ -74,14 +65,12 @@ const login = async (req, res) => {
         user: user._id,
       });
     };
-
     if (!findToken) {
       saveToken();
     } else {
       const deleted = await RefreshTokenModel.deleteOne({ user: user._id });
       saveToken();
     }
-
     //send both tokens
     sendRefreshToken(res, refreshToken);
     sendAccessToken(res, req, token, "You are logged in");
@@ -93,7 +82,10 @@ const login = async (req, res) => {
 //logout
 const logout = async (req, res) => {
   try {
-    res.clearCookie("refreshtoken", { httpOnly: true, sameSite: "None", secure: true });
+    res.clearCookie("refreshtoken", {
+      httpOnly: true,
+      secure: true,
+    });
     const deleted = await RefreshTokenModel.deleteOne({
       token: req.cookies.refreshtoken,
     });
@@ -132,16 +124,13 @@ const refreshToken = async (req, res) => {
   } catch (err) {
     return res.send({ message: "Couldn't verify token." });
   }
-
   const idToFind = new ObjectId(payload.id);
   try {
     // look for user
     const user = await RefreshTokenModel.findOne({ user: idToFind });
     if (!user) return res.send({ accesstoken: "" });
-
     // user.refreshtoken should equal token
     if (user.token !== token) return res.send({ accesstoken: "" });
-
     const accesstoken = createAccessToken(user.user);
     sendAccessToken(res, req, accesstoken, "access granted");
   } catch (err) {
