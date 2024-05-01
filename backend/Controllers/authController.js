@@ -84,7 +84,7 @@ const logout = async (req, res) => {
   try {
     res.clearCookie("refreshtoken", {
       httpOnly: true,
-      sameSite: "None",
+      sameSite: "Lax",
       secure: true,
     });
     const deleted = await RefreshTokenModel.deleteOne({

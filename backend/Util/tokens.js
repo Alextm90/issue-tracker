@@ -27,7 +27,7 @@ const sendRefreshToken = (res, token) => {
   res.cookie("refreshtoken", token, {
     withCredentials: true,
     httpOnly: true,
-    sameSite: "None",
+    sameSite: "Lax",
     secure: "true",
   });
 };
