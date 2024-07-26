@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { terminal } from "virtual:terminal";
 import React, { useState } from "react";
-import Form from "../components/form";
+import Form from "../components/Form.jsx";
 import axios from "axios";
 import handleInputChange from "../utils/handleInputChange";
 

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { terminal } from "virtual:terminal";
 import IssueList from "../components/IssueList";
-import Form from "../components/form";
+import Form from "../components/Form.jsx";
 import handleInputChange from "../utils/handleInputChange";
 import useAxiosInstance from "../hooks/useAxiosInstance";
 
