@@ -2,6 +2,7 @@ import axios from "axios";
 import useAuth from "./useAuth";
 import { useEffect } from "react";
 import { axiosInstance } from "../api/axiosInstance";
+import { terminal } from "virtual:terminal";
 
 const useAxiosInstance = () => {
   const { auth, setAuth } = useAuth();
@@ -22,9 +23,11 @@ const useAxiosInstance = () => {
     const responseInterceptor = axiosInstance.interceptors.response.use(
       response => response,
       async (error) => {
+      terminal.log(error, "error")
         const originalRequest = error.config;
         // check for failed request
         if (error.response.status === 403 && !originalRequest?._retry) {
+          terminal.log(error, "2nd")
           originalRequest._retry = true;
           // Get new access token + update state
             const accessToken = await axios.get(
