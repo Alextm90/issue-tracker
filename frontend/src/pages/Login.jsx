@@ -26,7 +26,6 @@ const Login = () => {
 
       const { success, message, accesstoken } = response.data;
       setAuth(accesstoken);
-      terminal.log(response.data);
 
       if (success) {
         toast(message, {
