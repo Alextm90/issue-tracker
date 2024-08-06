@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../Models/user.js");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const ObjectId = require("mongoose").Types.ObjectId;
 const {
   createAccessToken,
