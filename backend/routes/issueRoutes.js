@@ -100,14 +100,16 @@ router
       assigned_to == "" &&
       status_text == ""
     ) {
-      return res.status(400).json({ error: "no update field(s) sent", _id: req.body._id });
+      return res
+        .status(400)
+        .json({ error: "no update field(s) sent", _id: req.body._id });
     }
 
     if (ObjectId.isValid(id)) {
       try {
         const foundIssue = await Issue.findById(id);
         if (foundIssue) {
-          let issueId = foundIssue._id.toString(); 
+          let issueId = foundIssue._id.toString();
           //update values
           for (const key in req.body) {
             foundIssue[key] = req.body[key];
@@ -137,8 +139,8 @@ router.route("/:id").delete(async function (req, res) {
   const { id } = req.params;
 
   //check for missing id
-  if (!id || id == '{}') {
-    return res.status(400).json({ error: "missing _id" })
+  if (!id || id == "{}") {
+    return res.status(400).json({ error: "missing _id" });
   }
   //check for valid id
   if (ObjectId.isValid(id)) {
