@@ -9,8 +9,8 @@ const IssueList = ({ list, setList }) => {
   const handleDeleteIssue = async (e) => {
     e.preventDefault();
     try {
-      await axios.delete(`https://issue-tracker-nwp9.onrender.com/${e.target.value}`);
-      const response = await axios.get("https://issue-tracker-nwp9.onrender.com");
+      await axios.delete(`https://my-backend-latest-0ftm.onrender.com/${e.target.value}`);
+      const response = await axios.get("https://my-backend-latest-0ftm.onrender.com");
       setList(response.data);
     } catch (error) {
       terminal.error(error);
@@ -19,11 +19,11 @@ const IssueList = ({ list, setList }) => {
 
   const handleCloseIssue = async (e) => {
     try {
-      await axios.put("https://issue-tracker-nwp9.onrender.com", {
+      await axios.put("https://my-backend-latest-0ftm.onrender.com", {
         _id: e.target.value,
         open: false,
       });
-      const response = await axios.get("https://issue-tracker-nwp9.onrender.com");
+      const response = await axios.get("https://my-backend-latest-0ftm.onrender.com");
       setList(response.data);
     } catch (error) {
       terminal.error(error);

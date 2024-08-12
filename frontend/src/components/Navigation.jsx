@@ -12,7 +12,7 @@ const Navigation = () => {
     setAuth(null);
     try {
       const response = await axios.post(
-        "https://issue-tracker-nwp9.onrender.com/logout",
+        "https://my-backend-latest-0ftm.onrender.com/logout",
         null,
         {
           withCredentials: true,
