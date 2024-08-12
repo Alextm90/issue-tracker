@@ -27,7 +27,7 @@ const Home = () => {
   const getIssues = async () => {
     try {
       const response = await axios.get(
-        "https://issue-tracker-nwp9.onrender.com"
+        "https://my-backend-latest-0ftm.onrender.com"
       );
       setList(response.data);
     } catch (err) {

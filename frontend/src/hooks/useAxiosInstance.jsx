@@ -18,29 +18,29 @@ const useAxiosInstance = () => {
       },
       (error) => Promise.reject(error)
     );
-    
+
     // response interceptor
     const responseInterceptor = axiosInstance.interceptors.response.use(
-      response => response,
+      (response) => response,
       async (error) => {
-      terminal.log(error, "error")
+        terminal.log(error, "error"); //remove
         const originalRequest = error.config;
         // check for failed request
         if (error.response.status === 403 && !originalRequest?._retry) {
-          terminal.log(error, "2nd")
+          terminal.log(error, "2nd"); //remove
           originalRequest._retry = true;
           // Get new access token + update state
-            const accessToken = await axios.get(
-              "https://issue-tracker-nwp9.onrender.com/refreshtoken",
-              {
-                withCredentials: true,
-              }
-            );
-            const { accesstoken } = accessToken.data;
-            setAuth(accesstoken);
-            // Retry the original request with the new acccess token
-            originalRequest.headers["Authorization"] = `Bearer ${accesstoken}`;
-            return axiosInstance(originalRequest);
+          const accessToken = await axios.get(
+            "https://my-backend-latest-0ftm.onrender.com/refreshtoken",
+            {
+              withCredentials: true,
+            }
+          );
+          const { accesstoken } = accessToken.data;
+          setAuth(accesstoken);
+          // Retry the original request with the new acccess token
+          originalRequest.headers["Authorization"] = `Bearer ${accesstoken}`;
+          return axiosInstance(originalRequest);
         }
         return Promise.reject(error);
       }
@@ -51,7 +51,6 @@ const useAxiosInstance = () => {
       axiosInstance.interceptors.response.eject(responseInterceptor);
     };
   }, [auth]);
-
 
   return axiosInstance;
 };

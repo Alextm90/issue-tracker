@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
     const checkAuth = async () => {
       try {
         const response = await axios.get(
-          "https://issue-tracker-nwp9.onrender.com/refreshtoken",
+          "https://my-backend-latest-0ftm.onrender.com/refreshtoken",
           {
             withCredentials: true,
           }
