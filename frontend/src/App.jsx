@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import Update from "./pages/Update";
 import Login from "./pages/Login";
@@ -13,7 +13,7 @@ const App = () => {
   return (
     <AuthProvider>
       <Router>
-        <Navigation />
+      <HideNavigation />
         <Routes>
           <Route element={<RequireAuth />}>
             <Route path="/" element={<Home />} />
@@ -25,6 +25,15 @@ const App = () => {
       </Router>
     </AuthProvider>
   );
+};
+
+// Only show logout button after logged in/signed up
+const HideNavigation = () => {
+  const location = useLocation();
+  if (location.pathname === "/login" || location.pathname === "/signup") {
+    return null;
+  }
+  return <Navigation />;
 };
 
 export default App;
