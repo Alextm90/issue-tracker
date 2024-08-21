@@ -70,33 +70,35 @@ const Signup = () => {
       <h2>Signup</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label id="username">
-            Username
+          <label htmlFor="username">
             <input
               type="text"
+              id="username"
               name="username"
               placeholder="Enter your username"
               value={username}
               onChange={(event) => setUsername(event.target.value)}
+               className="input-box"
             />
           </label>
         </div>
         <div>
-          <label id="password">
-            Password
+          <label htmlFor="password">
             <input
               type="password"
+              id="password"
               name="password"
               placeholder="Enter your password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
+               className="input-box"
             />
           </label>
         </div>
-        <button type="submit">Submit</button>
-        <span>
-          Already Registed? <Link to={"/login"}>Login</Link>
-        </span>
+        <button type="submit" className="submit-button">Submit</button>
+        <div>
+          Already Registed? <Link to={"/login"} style={{ color: "darkblue" }}>Login</Link>
+        </div>
       </form>
       <ToastContainer />
     </div>

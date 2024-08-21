@@ -59,37 +59,39 @@ const Login = () => {
   };
 
   return (
-    <div className="form_container">
-      <h2>Login Account</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="form-container">
+      <h2>Member Login</h2>
+      <form onSubmit={handleSubmit} >
         <div>
-          <label id="username">
-            Username
+          <label htmlFor="username">
             <input
               type="text"
               name="username"
-              placeholder="Enter your username"
+              id="username"
+              placeholder="Username"
               value={username}
               onChange={(event) => setUsername(event.target.value)}
+              className="input-box"
             />
           </label>
         </div>
         <div>
-          <label id="password">
-            Password
+          <label htmlFor="password">
             <input
               type="password"
+              id="password"
               name="password"
-              placeholder="Enter your password"
+              placeholder="Password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
+              className="input-box"
             />
           </label>
         </div>
-        <button type="submit">Submit</button>
-        <span>
-          Need to signup? <Link to={"/signup"}>Signup</Link>
-        </span>
+        <button type="submit" className="submit-button">Submit</button>
+        <div style={{ color: "white", marginTop: ".1rem" }}>
+          Need to signup? <Link to={"/signup"} style={{ color: "darkblue" }}>Signup</Link>
+        </div>
       </form>
       <ToastContainer />
     </div>
