@@ -20,7 +20,8 @@ a {
   text-decoration: inherit;
 }
 
-p, h3 {
+p,
+h3 {
   margin: 0;
 }
 
@@ -28,58 +29,112 @@ a:hover {
   color: #535bf2;
 }
 
-/* body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-} */
-
-
 button {
-  border-radius: 1rem;
   border: 1px solid transparent;
-  padding: .2rem;
-  font-size: .7em;
+  border-radius: 0.2rem;
+  padding: 0.2rem;
+  font-size: 0.7em;
   font-weight: 500;
   font-family: inherit;
-  margin: .5rem;
+  margin: 0.5rem;
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
 
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: none;
 }
 
 .open-issue {
-  margin: 1rem;
-  border: 3px solid aqua
+  margin: 1rem auto;
+  border: 3px solid aqua;
+  padding: 1rem;
+  width: 40%;
+  max-width: 800px;
+  min-width: 300px;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
 }
 
 .closed-issue {
-  margin: 1rem;
-  border: 3px solid pink
+  margin: 1rem auto;
+  border: 3px solid pink;
+  padding: 1rem;
+  width: 40%;
+  max-width: 800px;
+  min-width: 300px;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+}
+
+h2,
+#issue-header {
+  color: white;
+  padding: 0;
+  margin-bottom: 0.7rem;
+  font-size: 27px;
+}
+
+.input-box {
+  text-align: center;
+  border: none;
+  outline: none;
+  width: 13rem;
+  height: 2.7rem;
+  margin: 0.5rem;
+  font-size: 1rem;
+  background-color: black;
+  color: white !important;
+  caret-color: white;
+}
+
+.input-box::placeholder {
+  color: white;
+}
+
+.logout-button {
+  padding: 0.4rem;
+  font-size: 13px;
+}
+
+.submit-button {
+  width: 6.5rem;
+  font-size: 1rem;
+  height: 2.7rem;
+  margin: 0.5rem;
+  background-color: black;
+  color: white;
+}
+
+textarea,
+input {
+  font-size: 14px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
+    color: black;
     background-color: teal;
-  }
-  a:hover {
-    color: #747bff;
   }
   button {
     background-color: #f9f9f9;
   }
 }
 
+/* For username/password drop-down*/
+input:-webkit-autofill {
+  background-color: black !important;
+  color: white !important;
+  box-shadow: 0 0 0px 1000px black inset;
+}
 
-  
+input:-webkit-autofill::first-line {
+  color: white !important;
+}
