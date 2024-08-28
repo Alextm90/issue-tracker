@@ -96,7 +96,7 @@ const Signup = () => {
           </label>
         </div>
         <button type="submit" className="submit-button">Submit</button>
-        <div>
+        <div style={{ color: "white", marginTop: ".1rem" }}>
           Already Registed? <Link to={"/login"} style={{ color: "darkblue" }}>Login</Link>
         </div>
       </form>
