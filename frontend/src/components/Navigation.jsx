@@ -28,10 +28,10 @@ const Navigation = () => {
   };
 
   return (
-    <div>
-      <button onClick={logOut}>Log Out</button>
+    <div style={{marginLeft: "55rem" }} >
+      <button onClick={logOut} className="logout-button">Log Out</button>
     </div>
-  );
+  )
 };
 
 export default Navigation;
