@@ -1,7 +1,6 @@
-import React from 'react'
+import React from 'react';
 
 const Form = ({ issue, handleInputChange, handleSubmit }) => {
-
   return (
     <div>
       <form id="newIssue" method="post" action="/api/">
@@ -10,7 +9,7 @@ const Form = ({ issue, handleInputChange, handleSubmit }) => {
           name="issue_title"
           placeholder="*Title"
           value={issue.issue_title}
-          style={{ width: "320px", marginBottom: "3px" }}
+          style={{ width: '320px', marginBottom: '3px' }}
           required={true}
           onChange={handleInputChange}
         />
@@ -20,7 +19,7 @@ const Form = ({ issue, handleInputChange, handleSubmit }) => {
           name="issue_text"
           value={issue.issue_text}
           placeholder="*Text"
-          style={{ width: "320px", height: "100px", marginBottom: "-5px" }}
+          style={{ width: '320px', height: '100px', marginBottom: '-5px' }}
           required={true}
           onChange={handleInputChange}
         ></textarea>
@@ -30,7 +29,7 @@ const Form = ({ issue, handleInputChange, handleSubmit }) => {
           name="created_by"
           placeholder="*Created by"
           value={issue.created_by}
-          style={{ width: "100px", marginRight: "2px" }}
+          style={{ width: '100px', marginRight: '2px' }}
           required={true}
           onChange={handleInputChange}
         ></input>
@@ -39,15 +38,7 @@ const Form = ({ issue, handleInputChange, handleSubmit }) => {
           name="assigned_to"
           value={issue.assigned_to}
           placeholder="(opt)Assigned to"
-          style={{ width: "100px", marginRight: "2px" }}
-          onChange={handleInputChange}
-        ></input>
-        <input
-          type="text"
-          name="status_text"
-          value={issue.status_text}
-          placeholder="(opt)Status text"
-          style={{ width: "100px" }}
+          style={{ width: '110px', marginRight: '2px' }}
           onChange={handleInputChange}
         ></input>
         <br />
@@ -57,6 +48,6 @@ const Form = ({ issue, handleInputChange, handleSubmit }) => {
       </form>
     </div>
   );
-}
+};
 
-export default Form
+export default Form;
